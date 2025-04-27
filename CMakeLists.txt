@@ -1,10 +1,59 @@
+# cmake -DCMAKE_TOOLCHAIN_FILE=../build/aarch64-linux-gnu.cmake -DCMAKE_INSTALL_PREFIX=./target/tmp_root ..
+# make install
+
 cmake_minimum_required(VERSION 3.14)
-project(bmc_clid)
+
+project(BMC_CLID)
+
+include(cmake/global.cmake)
+
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-E -Wl,-rpath-link=/usr/lib64 -Wl,-rpath-link=/lib64")
+
+if (${CMAKE_SYSTEM_PROCESSOR} MATCHES "x86_64")
+    set(COMMANDS_DIR "usr/lib64/bmc_clid/plugin")
+    set(GENERATORS_DIR "usr/lib64/bmc_clid/generator")
+    set(APP_DIR "usr/bin")
+    set(LIB_DIR "usr/lib64")
+    set(CMAKE_INSTALL_PREFIX "./target/tmp_root")
+endif()
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/inc)
 
-aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/src CLID_SRC)
+set(NEED_COMMANDLINE 1)
+#set(NEED_COMPLETION 1)
+#set(NEED_PLUGIN 1)
+#set(NEED_SERVER 1)
+#set(NEED_BMCBOX 1)
+#set(NEED_SPLIT 1)
 
-add_executable(bmc_clid ${CLID_SRC} src/Commandline.cpp inc/CommandLine.hpp)
+set_property(GLOBAL PROPERTY GLOBAL_BMCBOX_SRC "")
+set_property(GLOBAL PROPERTY GLOBAL_BMCBOX_INC "")
 
-target_link_libraries(bmc_clid readline)
+add_subdirectory(src/libs)
+
+if (DEFINED NEED_COMMANDLINE)
+    aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/src CLID_SRC)
+    aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/src/commandline CLID_SRC)
+
+    if (DEFINED NEED_SERVER)
+        add_definitions(-DCLID_PORT=8888)
+        aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/src/server CLID_SRC)
+    endif()
+
+    message(STATUS "${CLID_SRC}")
+    add_executable(bmc_clid ${CLID_SRC} src/PluginProvider.cpp)
+    target_link_libraries(bmc_clid readline common)
+    INSTALL(TARGETS bmc_clid DESTINATION ${APP_DIR})
+endif()
+
+if (DEFINED NEED_COMPLETION)
+    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src/plugin)
+endif()
+
+if (DEFINED NEED_COMPLETION)
+    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src/generator)
+endif()
+
+if (DEFINED NEED_BMCBOX)
+    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src/bmcbox)
+endif()
