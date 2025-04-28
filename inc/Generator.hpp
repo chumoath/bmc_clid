@@ -5,6 +5,6 @@
 struct Generator
 {
     bool isCompletion;
-    rl_compentry_func_t *generator;
+    rl_compentry_func_t *generate;
     std::string arg_type;
 };

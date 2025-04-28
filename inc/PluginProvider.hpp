@@ -1,14 +1,25 @@
 #pragma once
 
 #include <forward_list>
-#include <string>
+#include <filesystem>
 
-#define COMMAND_LIB_PATH       ""
-#define GENERATOR_LIB_PATH     ""
+#define COMMAND_LIB_PATH       "/usr/lib64/bmc_clid/generator"
+#define GENERATOR_LIB_PATH     "/usr/lib64/bmc_clid/plugin"
 
-class PluginProvider
+struct PluginProvider
 {
+public:
+    void *addr;
+    std::string name;
 
+    PluginProvider() = delete;
+    PluginProvider(const PluginProvider&) = delete;
+    PluginProvider& operator=(const PluginProvider&) = delete;
+    PluginProvider(PluginProvider &&) = delete;
+    PluginProvider& operator=(PluginProvider&&) = delete;
+    explicit PluginProvider(const char *fname);
+    ~PluginProvider();
+    bool isOpen() const;
 };
 
-std::forward_list<PluginProvider> loadProvider(const std::string& pathLib);
+std::forward_list<PluginProvider> loadProviders(const std::filesystem::path &libsPath);

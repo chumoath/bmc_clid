@@ -19,8 +19,8 @@ CommandLine *CommandLine::getCurrentCommandLine()
         current_commandline = new CommandLine;
         // 不能在构造函数中加载so，否则插件中还会访问 current_commandline；
         // 但此时构造函数还未返回，current_commandline仍为nullptr
-        current_commandline->commandProviders = loadProvider(COMMAND_LIB_PATH);
-        current_commandline->commandProviders = loadProvider(GENERATOR_LIB_PATH);
+        current_commandline->commandProviders = loadProviders(COMMAND_LIB_PATH);
+        current_commandline->generatorProviders = loadProviders(GENERATOR_LIB_PATH);
     }
     return current_commandline;
 }
@@ -116,7 +116,7 @@ void CommandLine::processBuffer()
                 }
 
                 auto length_idx = it->second->arg_type.find('l');
-                // current_total_data_length = strToNum(tokens[length_idx + 1]);
+                 current_total_data_length = strToNum(tokens[length_idx + 1]);
                 current_data_length = tokens.size() - it->second->arg_type.length();
 
                 if ( current_words_length < it->second->arg_type.length() + current_total_data_length + 1 ) {
@@ -230,7 +230,7 @@ char **CommandLine::completerHelper(const char *text, int start, int )
     RegisteredGenerators::iterator it;
 
     if ( (it = current_commandline->ParamGenerators.find(current_commandline->current_word_type)) != std::end(current_commandline->ParamGenerators) ) {
-        completionList = rl_completion_matches(text, it->second->generator);
+        completionList = rl_completion_matches(text, it->second->generate);
     }
 
     return completionList;

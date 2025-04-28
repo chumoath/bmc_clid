@@ -9,7 +9,7 @@ static void register_command() __attribute__((constructor));
 
 #define REGISTER_COMMAND(_name, _func, _info, _arg_type, ...) \
     do { \
-        CommandLine::registerCommand(_name, _info, _arg_type, ##_VA_ARGS__, _func); \
+        CommandLine::getCurrentCommandLine()->registerCommand(_name, _info, _arg_type, ##__VA_ARGS__, _func); \
     } while (0)
 
 #define END_REGISTER_COMMAND() }
