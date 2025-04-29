@@ -45,7 +45,7 @@ if (DEFINED NEED_COMMANDLINE)
     endif()
 
     message(STATUS "${CLID_SRC}")
-    add_executable(bmc_clid ${CLID_SRC} src/generator/alert_generator.cpp src/generator/command_generator.cpp src/generator/data_generator.cpp src/generator/test_generator.cpp)
+    add_executable(bmc_clid ${CLID_SRC})
     target_link_libraries(bmc_clid readline common)
     INSTALL(TARGETS bmc_clid DESTINATION ${APP_DIR})
 endif()

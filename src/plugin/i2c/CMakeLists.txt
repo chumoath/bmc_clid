@@ -1,0 +1,20 @@
+include_directories(inc)
+aux_source_directory(src SRC_LIST)
+
+if (DEFINED NEED_BMCBOX)
+    bmcbox_aux_source()
+endif()
+
+if (DEFINED NEED_PLUGIN)
+    add_library(i2c SHARED ${SRC_LIST})
+    target_link_libraries(i2c common)
+    target_compile_definitions(i2c PRIVATE NEED_PLUGIN=1)
+    INSTALL(TARGETS i2c LIBRARY DESTINATION ${COMMANDS_DIR})
+endif()
+
+if (DEFINED NEED_SPLIT)
+    add_executable(bmcbox_i2c ${SRC_LIST})
+    target_link_libraries(bmcbox_i2c common)
+    target_compile_definitions(bmcbox_i2c PRIVATE NEED_SPLIT=1)
+    INSTALL(TARGETS bmcbox_i2c DESTINATION ${APP_DIR})
+endif()
