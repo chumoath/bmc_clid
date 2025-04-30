@@ -3,8 +3,12 @@
 #include <forward_list>
 #include <filesystem>
 
-#define COMMAND_LIB_PATH       "/usr/lib64/bmc_clid/generator"
-#define GENERATOR_LIB_PATH     "/usr/lib64/bmc_clid/plugin"
+/*
+ * 使用 static 或者 不加 inline，会有多个副本；符号类型为 d，表示初始化的全局/静态变量。
+ * 使用 inline constexpr，符号类型为 u，表示唯一全局符号。
+ */
+inline constexpr const char *COMMAND_LIB_PATH = "/usr/lib64/bmc_clid/generator";
+inline constexpr const char *GENERATOR_LIB_PATH = "/usr/lib64/bmc_clid/plugin";
 
 struct PluginProvider
 {
