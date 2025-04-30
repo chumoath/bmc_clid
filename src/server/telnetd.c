@@ -16,8 +16,8 @@
 #include <arpa/telnet.h>
 #include <arpa/inet.h>
 
-extern int run(const char *greeting);
-const char *greeting = "EXTERNAL> ";
+extern int run(void);
+extern const char *greeting;
 
 struct tsession {
     struct tsession *next;
@@ -586,7 +586,7 @@ static struct tsession *make_new_session(int sock)
      * issue files, and they may block writing to fd 1,
      * (parent is supposed to read it, but parent waits
      * for vforked child to exec!) */
-    run(greeting);
+    run();
     /* _exit is safer with vfork, and we shouldn't send message
      * to remote clients anyway */
     _exit(EXIT_SUCCESS); /*bb_perror_msg_and_die("execv %s", G.loginpath);*/
@@ -626,7 +626,7 @@ static void free_session(struct tsession *ts)
 	}
 }
 
-int main(int argc, char **argv)
+int telnetd_start(void)
 {
     fd_set rdfdset, wrfdset;
     int count;
