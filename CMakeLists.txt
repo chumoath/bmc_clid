@@ -40,13 +40,17 @@ if (DEFINED NEED_COMMANDLINE)
     aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/src/commandline CLID_SRC)
 
     if (DEFINED NEED_SERVER)
-        add_definitions(-DCLID_PORT=8888)
         aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/src/server CLID_SRC)
     endif()
 
     message(STATUS "${CLID_SRC}")
     add_executable(bmc_clid ${CLID_SRC})
     target_link_libraries(bmc_clid readline common)
+
+    if (DEFINED NEED_SERVER)
+        target_compile_definitions(bmc_clid PRIVATE NEED_SERVER=1 CLID_PORT=8888)
+    endif()
+
     INSTALL(TARGETS bmc_clid DESTINATION ${APP_DIR})
 endif()
 
