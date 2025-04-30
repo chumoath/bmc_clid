@@ -26,7 +26,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/inc)
 set(NEED_COMMANDLINE 1)
 set(NEED_COMPLETION 1)
 set(NEED_PLUGIN 1)
-#set(NEED_SERVER 1)
+set(NEED_SERVER 1)
 set(NEED_BMCBOX 1)
 set(NEED_SPLIT 1)
 
@@ -43,7 +43,7 @@ if (DEFINED NEED_COMMANDLINE)
         aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/src/server CLID_SRC)
     endif()
 
-    message(STATUS "${CLID_SRC}")
+    message(STATUS "CLID_SRC=${CLID_SRC}")
     add_executable(bmc_clid ${CLID_SRC})
     target_link_libraries(bmc_clid readline common)
 
