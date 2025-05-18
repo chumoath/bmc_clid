@@ -10,6 +10,8 @@
 class CommandLine
 {
 public:
+    CommandLine();
+    ~CommandLine() = default;
     CommandLine(const CommandLine &) = delete;
     CommandLine(CommandLine &&) = delete;
     CommandLine &operator=(const CommandLine &) = delete;
@@ -18,7 +20,7 @@ public:
     int readLine();
     int readLine(const std::string &greeting);
 
-    void registerCommand(const std::string &name, const std::string &arg_type, const std::string &info, const std::vector<std::string> &arg_alert, const Command::CommandFunction &func);
+    void registerCommand(const std::string &name, const std::string &info, const std::string &arg_type, const std::vector<std::string> &arg_alert, const Command::CommandFunction &func);
     void registerCommand(const Command &command);
 
     void registerParamGenerator(const Generator &generator);
@@ -29,12 +31,9 @@ public:
     std::string getStatus();
     size_t getDataLength();
     size_t getTotalDataLength();
-    static CommandLine *getCurrentCommandLine();
+    static std::shared_ptr<CommandLine> getCurrentCommandLine();
 
 private:
-    CommandLine();
-    ~CommandLine();
-
     static rl_completion_func_t completerHelper;
     static rl_command_func_t rl_mytab_completions;
 
@@ -44,11 +43,12 @@ private:
     using RegisteredCommands = std::map<std::string, std::shared_ptr<Command>>;
     using RegisteredGenerators = std::map<std::string, std::shared_ptr<Generator>>;
 
-    RegisteredCommands allCommands;
-    RegisteredGenerators ParamGenerators;
-
     std::forward_list<PluginProvider> commandProviders;
     std::forward_list<PluginProvider> generatorProviders;
+
+    // 先析构Command，再 dlclose 动态库；否则析构时会导致Segmentation Fault
+    RegisteredCommands allCommands;
+    RegisteredGenerators ParamGenerators;
 
     std::string current_word_type;
     size_t current_words_length;
@@ -57,21 +57,5 @@ private:
     std::string current_status;
     size_t current_data_length;
     size_t current_total_data_length;
-    static CommandLine *current_commandline;
-
-    class GarbageCollector {
-    public:
-        ~GarbageCollector() {
-            if (CommandLine::current_commandline != nullptr) {
-                delete CommandLine::current_commandline;
-                CommandLine::current_commandline = nullptr;
-
-                // 成员会自己析构，不必再手动析构
-                // current_commandline->commandProviders.clear();
-                // current_commandline->generatorProviders.clear();
-            }
-        }
-    };
-
-    static GarbageCollector gc;
+    static std::shared_ptr<CommandLine> current_commandline;
 };

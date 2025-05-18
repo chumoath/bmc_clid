@@ -1,22 +1,19 @@
 #include "CommandLine.hpp"
 #include "Common.hpp"
 #include <iostream>
-#include <fstream>
 #include <functional>
 #include <iterator>
-#include <sstream>
 #include <cstring>
 #include <readline/readline.h>
 #include <readline/history.h>
 
 // 类的静态成员变量需要定义
-CommandLine *CommandLine::current_commandline = nullptr;
-CommandLine::GarbageCollector CommandLine::gc;
+std::shared_ptr<CommandLine> CommandLine::current_commandline = nullptr;
 
-CommandLine *CommandLine::getCurrentCommandLine()
+std::shared_ptr<CommandLine> CommandLine::getCurrentCommandLine()
 {
     if ( current_commandline == nullptr ) {
-        current_commandline = new CommandLine;
+        current_commandline = std::make_shared<CommandLine>();
         // 不能在构造函数中加载so，否则插件中还会访问 current_commandline；
         // 但此时构造函数还未返回，current_commandline仍为nullptr
         current_commandline->commandProviders = loadProviders(COMMAND_LIB_PATH);
@@ -59,13 +56,6 @@ CommandLine::CommandLine()
 
        return ReturnCode::Ok;
     });
-}
-
-CommandLine::~CommandLine()
-{
-    // 先调用自身析构函数，再调用成员析构函数；此处顺序没问题
-    allCommands.clear();
-    ParamGenerators.clear();
 }
 
 void CommandLine::processBuffer()

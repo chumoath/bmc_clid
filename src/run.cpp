@@ -6,7 +6,7 @@ const char *greeting = "EXTERNAL> ";
 
 extern "C" int run(void)
 {
-    CommandLine *c = CommandLine::getCurrentCommandLine();
+    std::shared_ptr<CommandLine> c = CommandLine::getCurrentCommandLine();
     int retCode;
 
     do {
