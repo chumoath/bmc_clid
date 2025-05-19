@@ -47,6 +47,7 @@ private:
     std::forward_list<PluginProvider> generatorProviders;
 
     // 先析构Command，再 dlclose 动态库；否则析构时会导致Segmentation Fault
+    // current_commandline 使用智能指针，确保CommandLine对象被析构；否则 new出的对象没有手动delete，不会析构对象，也不会触发该问题
     RegisteredCommands allCommands;
     RegisteredGenerators ParamGenerators;
 
