@@ -33,10 +33,10 @@ static int i2c_read(const std::vector<std::string> &Inputs, std::vector<std::str
     oss << "i2ctransfer -f -y " << Inputs[1] << " w" << offset_width << "@" << Inputs[3] << " ";
 
     if ( offset > 0xFF ) {
-        oss << "0x" << intToHexStr(offset >> 8) << " ";
+        oss << intToHexStr(offset >> 8) << " ";
     }
 
-    oss << "0x" << intToHexStr(offset & 0xFF) << " " << "r" << Inputs[2];
+    oss << intToHexStr(offset & 0xFF) << " " << "r" << Inputs[2];
 
     cmdline = oss.str();
 
@@ -90,10 +90,10 @@ static int i2c_write(const std::vector<std::string> &Inputs, std::vector<std::st
     oss << "i2ctransfer -f -y " << Inputs[1] << " w" << wlen << "@" << Inputs[3] << " ";
 
     if ( offset > 0xFF ) {
-        oss << "0x" << intToHexStr(offset >> 8) << " ";
+        oss << intToHexStr(offset >> 8) << " ";
     }
 
-    oss << "0x" << intToHexStr( offset & 0xFF ) << " ";
+    oss << intToHexStr( offset & 0xFF ) << " ";
 
     for ( auto it = Inputs.begin() + 5; it != Inputs.end(); it++ ) {
         oss << *it << " ";

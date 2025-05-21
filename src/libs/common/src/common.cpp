@@ -22,13 +22,6 @@ int execPopen(const std::string &cmdline, std::string &outputs)
     return status;
 }
 
-std::string intToHexStr(int num)
-{
-    std::stringstream ss;
-    ss << std::hex << num;
-    return ss.str();
-}
-
 int strToNum(const std::string &numStr)
 {
     std::istringstream iss(numStr);
