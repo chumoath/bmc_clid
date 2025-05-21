@@ -5,6 +5,9 @@ cmake_minimum_required(VERSION 3.14)
 
 project(BMC_CLID)
 
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 include(cmake/global.cmake)
 
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-E -Wl,-rpath-link=/usr/lib64 -Wl,-rpath-link=/lib64")
@@ -21,14 +24,17 @@ if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug)
 endif()
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/inc)
-
 set(NEED_COMMANDLINE 1)
 set(NEED_COMPLETION 1)
 set(NEED_PLUGIN 1)
 set(NEED_SERVER 1)
 set(NEED_BMCBOX 1)
 set(NEED_SPLIT 1)
+
+find_package(Boost REQUIRED)
+include_directories(${Boost_INCLUDE_DIRS})
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/inc)
 
 set_property(GLOBAL PROPERTY GLOBAL_BMCBOX_SRC "")
 set_property(GLOBAL PROPERTY GLOBAL_BMCBOX_INC "")
@@ -45,7 +51,7 @@ if (DEFINED NEED_COMMANDLINE)
 
     message(STATUS "CLID_SRC=${CLID_SRC}")
     add_executable(bmc_clid ${CLID_SRC})
-    target_link_libraries(bmc_clid readline common)
+    target_link_libraries(bmc_clid readline common sdbusplus)
 
     if (DEFINED NEED_SERVER)
         target_compile_definitions(bmc_clid PRIVATE NEED_SERVER=1 CLID_PORT=8888)

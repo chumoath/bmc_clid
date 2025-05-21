@@ -6,6 +6,7 @@
 #include <memory>
 #include <map>
 #include <cstring>
+#include <sdbusplus/bus.hpp>
 
 class CommandLine
 {
@@ -32,7 +33,7 @@ public:
     size_t getDataLength();
     size_t getTotalDataLength();
     static std::shared_ptr<CommandLine> getCurrentCommandLine();
-
+    static std::shared_ptr<sdbusplus::bus_t> systemBus;
 private:
     static rl_completion_func_t completerHelper;
     static rl_command_func_t rl_mytab_completions;
