@@ -10,15 +10,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include(cmake/global.cmake)
 
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-E -Wl,-rpath-link=/usr/lib64 -Wl,-rpath-link=/lib64")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-E")
 
-if (${CMAKE_SYSTEM_PROCESSOR} MATCHES "x86_64")
-    set(COMMANDS_DIR "usr/lib64/bmc_clid/plugin")
-    set(GENERATORS_DIR "usr/lib64/bmc_clid/generator")
-    set(APP_DIR "usr/bin")
-    set(LIBS_DIR "usr/lib64")
-    set(CMAKE_INSTALL_PREFIX "./target/tmp_root")
-endif()
+set(COMMANDS_DIR "lib/bmc_clid/plugin")
+set(GENERATORS_DIR "lib/bmc_clid/generator")
+set(APP_DIR "bin")
+set(LIBS_DIR "lib")
+#set(CMAKE_INSTALL_PREFIX "./target/tmp_root")
 
 if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug)

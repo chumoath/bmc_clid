@@ -1,10 +1,13 @@
+#define _XOPEN_SOURCE 600
+#include <stdlib.h>
+#define __USE_MISC
+#include <sys/ioctl.h>
+#include <termios.h>
 #include <unistd.h>
 #include <syslog.h>
 #include <errno.h>
 #include <string.h>
-#include <stdlib.h>
 #include <stdio.h>
-#include <termios.h>
 #include <fcntl.h>
 #include <pty.h>
 #include <signal.h>
@@ -12,7 +15,6 @@
 #include <netinet/in.h>
 #include <sys/select.h>
 #include <sys/socket.h>
-#include <sys/ioctl.h>
 #include <arpa/telnet.h>
 #include <arpa/inet.h>
 
