@@ -49,7 +49,7 @@ if (DEFINED NEED_COMMANDLINE)
 
     message(STATUS "CLID_SRC=${CLID_SRC}")
     add_executable(bmc_clid ${CLID_SRC})
-    target_link_libraries(bmc_clid readline bmclid_common sdbusplus)
+    target_link_libraries(bmc_clid readline bmclid_common sdbusplus systemd)
 
     if (DEFINED NEED_SERVER)
         target_compile_definitions(bmc_clid PRIVATE NEED_SERVER=1 CLID_PORT=8888)
