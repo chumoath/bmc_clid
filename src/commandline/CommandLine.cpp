@@ -9,13 +9,11 @@
 
 // 类的静态成员变量需要定义
 std::shared_ptr<CommandLine> CommandLine::current_commandline = nullptr;
-std::shared_ptr<sdbusplus::bus_t> CommandLine::systemBus;
 
 std::shared_ptr<CommandLine> CommandLine::getCurrentCommandLine()
 {
     if ( current_commandline == nullptr ) {
         current_commandline = std::make_shared<CommandLine>();
-        CommandLine::systemBus = std::make_shared<sdbusplus::bus_t>(sdbusplus::bus::new_default());
         // 不能在构造函数中加载so，否则插件中还会访问 current_commandline；
         // 但此时构造函数还未返回，current_commandline仍为nullptr
         current_commandline->commandProviders = loadProviders(COMMAND_LIB_PATH);
@@ -28,6 +26,8 @@ std::shared_ptr<CommandLine> CommandLine::getCurrentCommandLine()
 // Quitting behaviour is hardcoded in readLine()
 CommandLine::CommandLine()
 {
+    systemBus = std::make_shared<sdbusplus::bus_t>(sdbusplus::bus::new_default());
+
     rl_bind_key(TAB, CommandLine::rl_mytab_completions); // To disable the default TAB behavior
     rl_attempted_completion_function = &CommandLine::completerHelper;
 
