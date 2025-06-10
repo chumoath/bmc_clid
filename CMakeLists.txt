@@ -1,4 +1,5 @@
 # cmake -DCMAKE_TOOLCHAIN_FILE=../build/aarch64-linux-gnu.cmake -DCMAKE_INSTALL_PREFIX=./target/tmp_root ..
+# cmake -DCMAKE_INSTALL_PREFIX=/usr/ ..
 # make install
 
 cmake_minimum_required(VERSION 3.14)
